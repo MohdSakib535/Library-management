@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block css %} 
+<style>
+  .m1{
+    {% comment %} position:absolute; {% endcomment %}
+    display:flex;
+    justify-content:end; 
+    position:relative;
+    bottom:177px;
+    font-size:30px;
+  }
+ 
+
+</style>
+{% endblock css %}
+
+
+{% block content1 %}
+{% load customfilter %}
+<h2>ALL available books</h2>
+
+
+<div class="row">
+  
+  <div class="col-lg-2 col-md-2 pl-3">
+    <div class="list-group">
+      <a href="{% url 'available_books' %}" class="list-group-item list-group-item-action  "><strong>All types</strong></a>
+      {% for m in available_categories %}
+      <a href="/avb/?category={{m.id}}" class="list-group-item list-group-item-action ">{{m.type|capfirst}}</a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="col-lg-10 col-md-10 col-sm-12 col-12 mx-auto">
+    <div class="container-fluid">
+      {% if messages %}
+      <ul class="messages mr-2">
+    {% for message in messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    
+    {% endfor %}
+</ul>
+{% endif %} 
+      <div class="row">
+        {% for i,j in data %}
+          <div class="card  m-3 " style="width:20%;">
+            
+            {% comment %} <h1>{{i.book_img.url}}</h1> {% endcomment %}
+            <img class="card-img-top " src="{{i.book_img.url}}" alt="" style='width:100%;'  >
+             <span class='m1'>
+              <a  href="/fav/?unique_id={{j.id}}"  class="badge badge-primary border border-light" >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmarks" viewBox="0 0 16 16">
+                  <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5V4zm2-1a1 1 0 0 0-1 1v10.566l3.723-2.482a.5.5 0 0 1 .554 0L11 14.566V4a1 1 0 0 0-1-1H4z"/>
+                  <path d="M4.268 1H12a1 1 0 0 1 1 1v11.768l.223.148A.5.5 0 0 0 14 13.5V2a2 2 0 0 0-2-2H6a2 2 0 0 0-1.732 1z"/>
+                </svg>
+              </a>  
+            </span> 
+              <div class="card-body" style='position:relative;bottom:25px; padding-bottom:10px' >
+                <h5 class="card-title ">{{i.name|capfirst}} ({{i.Author|title}})</h5>
+                <p class="card-text"><strong>Type: </strong>{{i.category|Short}}<br> 
+                  
+                  <strong>icsb_no: </strong>{{j.icsb_no}}
+                
+                </p>
+
+                <div class='card-footer text-muted'>
+                  <a href="{% url 'book_detail' i.id %}" class="btn btn-primary ">details</a>
+                  
+                  {% if i.status == 'active' %}
+                  <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModal-{{forloop.counter}}">
+                    Active
+                  </button>
+                  {% elif i.status == 'borrow' %}
+                  <button type="button" class="btn btn-warning  "style="cursor: no-drop;">
+                    Borrow
+                  </button> 
+  
+                  {% endif %} 
+
+                </div>
+            
+             
+                 {% comment %} <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModal-{{forloop.counter}}">
+                  Active
+                </button>  {% endcomment %}
+               
+                
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal-{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{i.book_name.name|capfirst}} </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body ">
+                        <form action="{% url 'issue_book' id=i.id %}"  method="POST">
+                          {% csrf_token %}
+  
+                          <label for="issued_date">Issue_Date</label>
+                          <input type="date" class='form-control' id="issued_date" name="issue_date" required>
+                        
+                          <label for="returned_date">Return_Date</label> 
+                          <input type="date" class='form-control' id="returned_date" name="return_date" required> 
+  
+                          
+                          {% comment %} <input type='hidden' value="{{i.book_name.name}}" name='book_name_data'> {% endcomment %}
+                          
+                          <input type='hidden' value="borrow" name='book_name_status'>
+                          
+                        
+                          
+  
+                          </div>
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              <button type="submit" class="btn btn-primary">Submit</button>
+                          </div> 
+                        </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+         
+        {% endfor %}
+      </div>
+  
+  
+    </div>
+  </div>
+</div>
+  
+
+
+{% endblock %}

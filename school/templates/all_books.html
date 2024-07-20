@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block content1 %}
+{% load customfilter %}
+<h1 class='container bg-warning d-flex mt-5'>All books</h1>
+<div class=' mt-5 ml-5' >
+     <table class='table table-striped'> 
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>book name</th>
+                <th>Author name</th>
+                <th>category</th>
+                <th>icsb no</th>
+                <th>Action</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in books %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{i.book_name.name}}</td>
+                <td>{{i.book_name.Author}}</td>
+                <td>{{i.book_name.category|Short}}</td>
+                <td>{{i.icsb_no}}</td>
+                <td>
+                    <a class="btn btn-danger" href="{% url 'delete' i.book_name.id %}" role="button">
+                        <img src="/static/images/trash.gif" style="width:25px; height:25px; color:white;" alt="">
+                        
+                    </a>
+                    {% comment %} <a class="btn btn-danger" href="{% url 'update_books'  %}" role="button">
+                        <img src="/static/images/trash.gif" style="width:25px; height:25px; color:black;" alt="">
+                        
+                    </a> {% endcomment %}
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal-{{forloop.counter}}">
+                        Edit
+                      </button>
+                      
+                      <!-- Modal -->
+                      <div class="modal fade" id="exampleModal-{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">update book detail</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{% url 'edit_book' id=i.book_name.id %}" method="POST" enctype='multipart/form-data' class='bg-light w-50'>
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                      <input type="text" class="form-control" id="exampleInputEmail1" name='name' value="{{i.book_name.name}}"aria-describedby="emailHelp" placeholder="Book Name" required>
+                                    </div>
+                                
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" name='author' value="{{i.book_name.Author}}"aria-describedby="emailHelp" placeholder="Book Author" required>
+                                    </div>
+                                
+                                    
+                                    <select class="form-control" name='category' value={{i.book_name.category}}  >
+                                        <option value=''>--Select--</option>
+                                        {% for m in category %}
+                                        {% if i.book_name.category.type == m.type %}
+                                        <option  selected value="{{m.id}}">{{m.type}}</option>
+                                        {% else %}
+                                        <option value="{{m.id}}">{{m.type}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                      </select>
+                                      {% comment %} <h1>{{i.book_name.category.type}}</h1>
+                                      <h2>{{m.type}}</h2> {% endcomment %}
+                                      
+
+                                        
+                                    
+                                     {% comment %} <div class="form-group mt-3">
+                                        <input type="file" class="form-control-file" name='image_book' id="exampleFormControlFile1" required>
+                                    </div>  {% endcomment %}
+                                
+                                     {% comment %} <button type="submit" class="btn btn-primary ">Submit</button>  {% endcomment %}
+                                  
+                            </div>
+                            <div class="modal-footer">
+                              {% comment %} <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> {% endcomment %}
+                              <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div> 
+                        </form>
+                          </div>
+                        </div>
+                      </div>
+                </td> 
+                
+            </tr>
+            {% endfor  %}
+            
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+   
+  let table = new DataTable('#table_id', {
+     options
+  });
+  
+  </script>
+
+  <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
+
+
+{% endblock  %}

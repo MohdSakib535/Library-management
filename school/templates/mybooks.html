@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block css %} 
+<style>
+  
+ 
+
+</style>
+{% endblock css %}
+
+
+{% block content1 %}
+{% load customfilter %}
+<h2>ALL Favourite books</h2>
+
+
+<div class="row">
+  <div class="col-lg-10 col-md-10 col-sm-12 col-12 mx-auto">
+    <div class="container-fluid">
+      <div class="row">
+        {% for i in m %}
+          <div class="card  m-3 " style="width:20%;">
+            <img class="card-img-top " src="{{i.unique_id.book_name.book_img.url}}" alt="" style='width:100%;height:162px;'  >
+             
+              <div class="card-body" style='position:relative;bottom:15px; padding-bottom:10px' >
+                <h5 class="card-title ">{{i.unique_id.book_name.name|capfirst}} ({{i.unique_id.book_name.Author|title}})</h5>
+                <p class="card-text"><strong>Type: </strong>{{i.unique_id.book_name.category|Short}}<br> 
+                  
+                  <strong>icsb_no: </strong>{{i.unique_id.icsb_no}}
+                
+                </p>
+
+                <div class='card-footer text-muted'>
+                  <a href="{% url 'book_detail' i.unique_id.id %}" class="btn btn-primary ">details</a>
+                  <a href="/mb/?unique_id={{i.id}}" class="btn btn-primary ">Remove</a>
+                  
+                  {% comment %} {% if i.unique_id.book_name.status == 'active' %}
+                  <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModal-{{forloop.counter}}">
+                    Active
+                  </button>
+                  {% elif i.unique_id.book_name.status == 'borrow' %}
+                  <button type="button" class="btn btn-warning  "style="cursor: no-drop;">
+                    Borrow
+                  </button> 
+  
+                  {% endif %}  {% endcomment %}
+
+                </div>
+            
+             
+                 {% comment %} <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModal-{{forloop.counter}}">
+                  Active
+                </button>  {% endcomment %}
+               
+                
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal-{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{i.book_name.name|capfirst}} </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body ">
+                        <form action="{% url 'issue_book' id=i.id %}"  method="POST">
+                          {% csrf_token %}
+  
+                          <label for="issued_date">Issue_Date</label>
+                          <input type="date" class='form-control' id="issued_date" name="issue_date" required>
+                        
+                          <label for="returned_date">Return_Date</label> 
+                          <input type="date" class='form-control' id="returned_date" name="return_date" required> 
+  
+                          
+                          {% comment %} <input type='hidden' value="{{i.book_name.name}}" name='book_name_data'> {% endcomment %}
+                          
+                          <input type='hidden' value="borrow" name='book_name_status'>
+                          
+                        
+                          
+  
+                          </div>
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              <button type="submit" class="btn btn-primary">Submit</button>
+                          </div> 
+                        </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+         
+        {% endfor %}
+      </div>
+  
+  
+    </div>
+  </div>
+</div>
+  
+
+
+{% endblock %}

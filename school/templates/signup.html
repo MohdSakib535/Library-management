@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content1 %}
+<h1 class='container bg-warning d-flex mt-5'>Signup form</h1>
+<div class='container d-flex justify-content-center mt-5'>
+  <form action="" method="POST" class=" bg-light w-50">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="exampleInputEmail1">username</label>
+      <input type="text" class="form-control" id="exampleInputEmail1" name='name'aria-describedby="emailHelp" placeholder="Enter username">
+    </div>
+
+    <label for="exampleInputEmail1">designation</label>
+    <select class="custom-select custom-select mb-3" name='dropdown'>
+        <option selected>---select---</option>
+        <option value="Member">Member</option>
+        <option value="Librarian">librarian</option>
+    </select>
+
+    <div class="form-group">
+      <label for="exampleInputPassword1">Password</label>
+      <input type="password" class="form-control" id="exampleInputPassword1" name='password'placeholder="Password">
+    </div>
+    <button type="submit" class="btn btn-primary">Signup</button>
+    <a class="btn btn-link float-right" href="{% url 'login' %}" role="button">Login</a>
+  </form>
+
+</div>
+{% endblock %}

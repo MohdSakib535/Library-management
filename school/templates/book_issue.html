@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content1 %}
+{% load customfilter %}
+<h1 class='container bg-warning d-flex mt-5'>All books</h1>
+<div class=' mt-5 ml-5' style='width:90%'>
+    <table id="table_id" class="display">
+        <thead>
+            <tr>
+                <th>Sno.</th>
+                {% if request.user.is_superuser %}
+                <th>book holder</th>
+                {% endif %}
+                <th>book name</th>
+                <th>Author name</th>
+                <th>category</th>
+                <th>icsb no</th>
+                <th>issue Date</th>
+                <th>return Date</th>
+                <th>Fine(in Rs)</th>
+                <th>Action</th>
+
+    
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for i,j in book_issue %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                {% if request.user.is_superuser  %}
+                <td>{{i.user.username}}</td>
+                {% endif %}
+                <td>{{i.book_info.book_name.name}}</td>
+                <td>{{i.book_info.book_name.Author}}</td>
+                <td>{{i.book_info.book_name.category|Short}}</td>
+                <td>{{i.book_info.icsb_no}}</td>
+                <td>{{i.issue_date}}</td>
+                <td>{{i.return_date}}</td>
+                <td>{{j}}</td>
+                <td>
+                    <form action="{% url 'return_book' id=i.id %}"  method="POST">
+                        {% csrf_token %}    
+                        <input type='hidden' value="active" name='book_name_status'>
+                        <button type="submit" class="btn btn-warning " >Return</button>
+                    </form>
+                </td>
+               
+                
+            </tr>
+            {% endfor  %}
+            
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+   
+  let table = new DataTable('#table_id', {
+    // options
+  });
+  </script>
+
+  <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
+
+
+{% endblock  %}
